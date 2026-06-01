@@ -436,6 +436,13 @@ const Services = () => (
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [filter, setFilter] = useState<string>('all');
+
+  const categories = ['all', ...Array.from(new Set(PROJECTS.map(p => p.category)))];
+
+  const filteredProjects = filter === 'all' 
+    ? PROJECTS 
+    : PROJECTS.filter(p => p.category === filter);
 
   if (selectedProject) {
     return (
@@ -450,11 +457,71 @@ const Projects = () => {
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
-            <div className="lg:col-span-8">
-              <h2 className="text-4xl md:text-6xl font-light tracking-tighter mb-4">{selectedProject.title}</h2>
-              <p className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-20">{selectedProject.location}</p>
-              
-              <div className="space-y-12">
+            {/* Header Info */}
+            <div className="lg:col-span-12 mb-12 border-b border-neutral-100 pb-12">
+              <h2 className="text-4xl md:text-7xl font-light tracking-tighter mb-6">{selectedProject.title}</h2>
+              <div className="flex flex-wrap gap-8 items-center text-[10px] uppercase tracking-[0.4em] text-neutral-400 font-bold">
+                <span>{selectedProject.location}</span>
+                <span className="w-1.5 h-1.5 bg-neutral-200 rounded-full"></span>
+                <span>{selectedProject.category}</span>
+                <span className="w-1.5 h-1.5 bg-neutral-200 rounded-full"></span>
+                <span>{selectedProject.year}</span>
+              </div>
+            </div>
+
+            {/* Content Body */}
+            <div className="lg:col-span-4 order-2 lg:order-1">
+              <div className="sticky top-32 space-y-16">
+                <div>
+                  <h3 className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-10 font-bold">Resumo Técnico</h3>
+                  <div className="space-y-8 text-[11px] uppercase tracking-[0.3em] font-medium">
+                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-neutral-50">
+                      <span className="text-neutral-400">Cliente</span>
+                      <span className="text-black text-right">{selectedProject.specs.client}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-neutral-50">
+                      <span className="text-neutral-400">Área</span>
+                      <span className="text-black text-right">{selectedProject.specs.area}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-neutral-50">
+                      <span className="text-neutral-400">Estado</span>
+                      <span className="text-black text-right">{selectedProject.specs.status}</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-neutral-50">
+                      <span className="text-neutral-400">Equipa</span>
+                      <span className="text-black text-right">{selectedProject.specs.team}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-8">
+                   <h3 className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-8 font-bold">Partilhar</h3>
+                   <div className="flex space-x-6 text-neutral-300">
+                     <Facebook size={18} className="hover:text-black cursor-pointer transition-colors" />
+                     <Instagram size={18} className="hover:text-black cursor-pointer transition-colors" />
+                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-8 order-1 lg:order-2 space-y-20">
+              <div className="bg-neutral-50 overflow-hidden">
+                <img 
+                  src={selectedProject.imageUrl} 
+                  alt={selectedProject.title} 
+                  className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-1000"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              <div>
+                <h3 className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-8 font-bold">Memória Descritiva</h3>
+                <p className="text-neutral-600 leading-[2] text-lg font-light max-w-2xl">
+                  {selectedProject.description}
+                </p>
+              </div>
+
+              <div className="space-y-12 pt-12">
                 {selectedProject.gallery.map((img, idx) => (
                   <motion.div 
                     key={idx}
@@ -473,43 +540,6 @@ const Projects = () => {
                 ))}
               </div>
             </div>
-
-            <div className="lg:col-span-4">
-              <div className="sticky top-32 space-y-12">
-                <div>
-                  <h3 className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-6 font-bold">Descrição</h3>
-                  <p className="text-neutral-600 leading-relaxed text-sm font-light">
-                    {selectedProject.description}
-                  </p>
-                </div>
-
-                <div className="pt-12 border-t border-neutral-100">
-                  <h3 className="text-xs uppercase tracking-[0.5em] text-neutral-400 mb-8 font-bold">Ficha Técnica</h3>
-                  <div className="space-y-6 text-[11px] uppercase tracking-widest font-medium">
-                    <div className="grid grid-cols-2 gap-4">
-                      <span className="text-neutral-400">Cliente</span>
-                      <span className="text-black">{selectedProject.specs.client}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <span className="text-neutral-400">Área</span>
-                      <span className="text-black">{selectedProject.specs.area}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <span className="text-neutral-400">Estado</span>
-                      <span className="text-black">{selectedProject.specs.status}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <span className="text-neutral-400">Ano</span>
-                      <span className="text-black">{selectedProject.year}</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <span className="text-neutral-400">Equipa</span>
-                      <span className="text-black">{selectedProject.specs.team}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -519,26 +549,58 @@ const Projects = () => {
   return (
     <section className="py-32 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-20">
-          <h2 className="text-xs uppercase tracking-[0.4em] text-neutral-400 mb-6">Projetos</h2>
-          <p className="text-3xl font-light">Uma selecção de trabalhos</p>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12">
+          <div>
+            <h2 className="text-xs uppercase tracking-[0.4em] text-neutral-400 mb-6 font-bold">Portfolio</h2>
+            <p className="text-4xl font-light tracking-tight">Uma selecção de trabalhos</p>
+          </div>
+          
+          {/* Filters */}
+          <div className="flex flex-wrap gap-x-10 gap-y-4">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`text-[10px] uppercase tracking-[0.4em] pb-1 border-b transition-all duration-300 ${
+                  filter === cat ? 'border-black font-bold text-black' : 'border-transparent text-neutral-400 hover:text-black font-medium'
+                }`}
+              >
+                {cat === 'all' ? 'Ver Tudo' : cat}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROJECTS.map((p, i) => (
+        <div className="space-y-40">
+          {filteredProjects.map((p, i) => (
             <motion.div
               key={p.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ duration: 0.8, ease: [0.2, 0, 0, 1] }}
               onClick={() => setSelectedProject(p)}
-              className="group cursor-pointer"
+              className="group cursor-pointer grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
             >
-              <div className="aspect-square bg-neutral-100 mb-4 overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
-                <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
+              <div className="lg:col-span-8 overflow-hidden bg-neutral-100 grayscale group-hover:grayscale-0 transition-all duration-1000">
+                <img 
+                  src={p.imageUrl} 
+                  alt={p.title} 
+                  className="w-full h-[60vh] object-cover group-hover:scale-105 transition-transform duration-[2000ms]" 
+                  referrerPolicy="no-referrer" 
+                />
               </div>
-              <h3 className="text-sm font-medium uppercase tracking-widest">{p.title}</h3>
-              <p className="text-xs text-neutral-400 mt-1 uppercase tracking-wider">{p.location}</p>
+              <div className="lg:col-span-4 lg:pl-12">
+                <div className="mb-6 flex items-center space-x-4">
+                   <div className="h-px w-8 bg-neutral-200 group-hover:w-16 transition-all duration-700"></div>
+                   <span className="text-[10px] uppercase tracking-[0.5em] text-neutral-400 font-bold">{p.category}</span>
+                </div>
+                <h3 className="text-3xl font-light tracking-tighter mb-4 group-hover:pl-4 transition-all duration-700">{p.title}</h3>
+                <p className="text-xs text-neutral-400 uppercase tracking-widest pl-0 group-hover:pl-4 transition-all duration-700">{p.location} / {p.year}</p>
+                
+                <div className="mt-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                   <span className="text-[10px] uppercase tracking-[0.4em] font-bold border-b border-black pb-2">Explorar Projecto</span>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
